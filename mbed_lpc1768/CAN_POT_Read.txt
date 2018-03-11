@@ -1,0 +1,21 @@
+/* 
+Receiver code
+CANBus Tutorial based on lots of example code
+*/
+
+#include "mbed.h"
+
+Serial pc(USBTX, USBRX);          // tx, rx for Tera Term output
+DigitalOut led2(LED2);            // status LED
+CAN can2(p30, p29);               // CAN interface
+
+int main() {
+  CANMessage msg;                 // create empty CAN message
+  printf("received a CANbus message...\n"); // Write to serial terminal
+  while(1) {
+    if(can2.read(msg)) {          // if message is available, read into msg
+      pc.printf("POT value Received : %d,%d\n\r", msg.id,msg.data[0]);   // display message data
+      led2 = !led2;                                    // toggle receive status LED
+    } 
+  }
+}

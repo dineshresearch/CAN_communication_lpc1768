@@ -1,0 +1,26 @@
+#include "mbed.h"
+Serial pc(USBTX,USBRX);
+AnalogIn Ain(p20);
+DigitalOut led1(LED1);
+CAN can1(p9, p10);
+char counter = 0; 
+//AnalogIn Aout(p18);
+float ADCdata;
+int main() {
+ printf("sending a message via CANbus... ");
+ while (1) {
+ ADCdata=Ain;
+ //ADCOut=Aout;
+  counter = (ADCdata*3300 / 1023);
+  //counter = voltage
+     if (can1.write(CANMessage(1337, &counter, 1))) {
+            pc.printf("POT value sent : %d\n\r",counter);
+       //counter++;                                             // increment message counter value
+       led1 = !led1;                                          // toggle LED1 to show message sent
+    }else{
+      can1.reset();                                           // Reset CANbus if there is a problem
+    }
+    wait(1);        
+ //wait (0.5);
+ }
+}
